@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-def zScoreNormalization(dataframe):
+from sklearn.model_selection import train_test_split
+
+def z_score_normalization(dataframe):
     for column in dataframe.columns:
         mean = dataframe[column].mean() 
         std = dataframe[column].std() 
@@ -23,15 +25,15 @@ y_train = df.Survived.values
 average = sum(x_train.loc[x_train['Age']>0]["Age"].values.T)/len(x_train.loc[x_train['Age']>0]["Age"].values.T)
 x_train = x_train.fillna(average)
 
-x_train = np.array(zScoreNormalization(x_train))
+x_train = np.array(z_score_normalization(x_train))
 #only using class, isMale, isFemale, age, siblingSpouse, parentChild, fare
 #psuedo random values for initial values
 np.random.seed(0)
 w = np.random.random(7)/10
 b = 0.01
-
+x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.2, random_state=1)
 from sklearn.linear_model import LogisticRegression
 lr = LogisticRegression()
 print(x_train.shape, y_train.shape)
 lr.fit(x_train,y_train)
-print("Test Accuracy {}".format(lr.score(x_train,y_train)))
+print("Test Accuracy {}".format(lr.score(x_test,y_test)))
